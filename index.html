@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Giphy</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <style>
+    body {
+      width: 100%;
+    }
+    button {
+      padding: 0 2%;
+      margin: 0 2%;
+    }
+    h4 {
+      font-size: 100px;
+      font-weight: bold;
+      color: white;
+    }
+    .container {
+      background-color: rgba(0, 0, 0, 0.2);
+      max-width: 1000px;
+      width: 100%;
+    }
+    .btn {
+      margin-top: 2%;
+      margin-bottom: 2%;
+      font-size: 125%;
+      font-weight: bold;
+    } 
+    .guide {
+      padding: 3% 0 0 0;
+    }
+    .tag-row {
+      padding: 3% 0 0 0;
+    }
+    .category-row {
+      padding: 3% 0 ;
+    }
+    #photo {
+      padding-bottom: 3%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row text-center guide"><h4>Animals make everyday better!</h4></div>
+    <div class="row text-center tag-row" id="tags"></div>
+    <div class="row text-center category-row">
+      <input type="" name="" id="category"><button class="btn btn-secondary" id="addTag">Add Category</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="photo"></div>
+  </div>
+
+  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script type="text/javascript">
+
+    var tags = ["dog", "turtle", "flying squirrel", "dolphin", "elephant", "salamander"];
+
+      function renderButtons() {
+
+
+        for (var i = 0; i < tags.length; i++) {
+          $("#tags").append('<button class="tag-buttons btn btn-primary">' + tags[i] + '</button>');
+        }      
+        
+
+      } 
+      
+
+    $(document).on('click', '#addTag', function(event) {
+
+      event.preventDefault();
+
+      var newTag = $("#category").val().trim();
+      tags.push(newTag);
+
+      $("#tags").append('<button class="tag-buttons btn btn-primary">' + newTag + '</button>');
+
+
+    });
+   
+
+    $(document).on('click', '.tag-buttons', function(event) {
+
+      event.preventDefault();
+
+      var type = this.innerText;
+      console.log(this.innerText);
+      var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + encodeURI(type) + "&limit=10&api_key=dc6zaTOxFJmzC";
+
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).done(function(response) {
+        for (var i = 0; i < response.data.length; i++) {
+        $("#photo").append('<img class="gif" src="' + response.data[i].images.fixed_height_still.url + '">');
+      $('.animate').on('click', function() {
+        $(this).remove().append('<img src="' + response.data[i].images.fixed_height.url + '" class="animate">');
+        console.log($(this));
+      
+
+      }); 
+     
+
+    }  
+    $('body').on('click', '.gif', function() {
+    var src = $(this).attr("src");
+    if($(this).hasClass('playing')){
+     //stop
+     $(this).attr('src', src.replace(/\.gif/i, "_s.gif"))
+     $(this).removeClass('playing');
+    } else {
+    //play
+    $(this).addClass('playing');
+    $(this).attr('src', src.replace(/\_s.gif/i, ".gif"))
+    }
+    }); 
+    
+
+      });
+      $("#photo").empty();
+
+    });
+    renderButtons();
+  </script>
+</body>
+</html>
