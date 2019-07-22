@@ -91,10 +91,10 @@
     $(document).on('click', '.tag-buttons', function(event) {
 
       event.preventDefault();
-
+      $('body').off('click', '.gif');
       var type = this.innerText;
       console.log(this.innerText);
-      var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + encodeURI(type) + "&limit=10&api_key=dc6zaTOxFJmzC";
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + encodeURI(type) + "&limit=10&api_key=dc6zaTOxFJmzC";
 
       $.ajax({
         url: queryURL,
